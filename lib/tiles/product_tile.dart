@@ -1,4 +1,5 @@
 import 'package:ecommerce_flutter/data/product_data.dart';
+import 'package:ecommerce_flutter/screens/product_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProductTile extends StatelessWidget {
@@ -10,7 +11,10 @@ class ProductTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ProductScreen(this.product)));
+      },
       child: Card(
           child: "grid" == this.type
               ? Column(
