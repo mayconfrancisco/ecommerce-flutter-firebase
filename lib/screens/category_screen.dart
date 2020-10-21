@@ -4,9 +4,9 @@ import 'package:ecommerce_flutter/tiles/product_tile.dart';
 import 'package:flutter/material.dart';
 
 class CategoryScreen extends StatelessWidget {
-  final DocumentSnapshot documentSnapshot;
+  final DocumentSnapshot categorySnapshot;
 
-  CategoryScreen(this.documentSnapshot);
+  CategoryScreen(this.categorySnapshot);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class CategoryScreen extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(documentSnapshot.data['title']),
+            title: Text(categorySnapshot.data['title']),
             centerTitle: true,
             bottom: TabBar(
               indicatorColor: Colors.white,
@@ -33,7 +33,7 @@ class CategoryScreen extends StatelessWidget {
           body: FutureBuilder<QuerySnapshot>(
             future: Firestore.instance
                 .collection('products')
-                .document(documentSnapshot.documentID)
+                .document(categorySnapshot.documentID)
                 .collection('items')
                 .getDocuments(),
             builder: (context, snapshotItems) {
@@ -56,19 +56,21 @@ class CategoryScreen extends StatelessWidget {
                                   childAspectRatio: 0.65),
                           itemCount: snapshotItems.data.documents.length,
                           itemBuilder: (context, index) {
-                            return ProductTile(
-                                "grid",
-                                ProductData.fromDocument(
-                                    snapshotItems.data.documents[index]));
+                            ProductData productData = ProductData.fromDocument(
+                                snapshotItems.data.documents[index]);
+                            productData.category =
+                                this.categorySnapshot.documentID;
+                            return ProductTile("grid", productData);
                           }),
                       ListView.builder(
                         padding: EdgeInsets.all(4),
                         itemCount: snapshotItems.data.documents.length,
                         itemBuilder: (context, index) {
-                          return ProductTile(
-                              "list",
-                              ProductData.fromDocument(
-                                  snapshotItems.data.documents[index]));
+                          ProductData productData = ProductData.fromDocument(
+                              snapshotItems.data.documents[index]);
+                          productData.category =
+                              this.categorySnapshot.documentID;
+                          return ProductTile("list", productData);
                         },
                       ),
                     ]);

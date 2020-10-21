@@ -1,5 +1,9 @@
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:ecommerce_flutter/data/cart_product.dart';
 import 'package:ecommerce_flutter/data/product_data.dart';
+import 'package:ecommerce_flutter/models/cart_model.dart';
+import 'package:ecommerce_flutter/models/user_model.dart';
+import 'package:ecommerce_flutter/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -102,12 +106,29 @@ class _ProductScreenState extends State<ProductScreen> {
                   height: 44,
                   child: RaisedButton(
                       child: Text(
-                        'Adicionar ao carrinho',
+                        UserModel.of(context).isLoggedIn()
+                            ? 'Adicionar ao carrinho'
+                            : 'Entre para comprar',
                         style: TextStyle(fontSize: 16),
                       ),
                       textColor: Colors.white,
                       color: primaryColor,
-                      onPressed: this.sizeSelected != null ? () {} : null),
+                      onPressed: this.sizeSelected != null
+                          ? () {
+                              if (UserModel.of(context).isLoggedIn()) {
+                                CartProduct cartProduct = CartProduct();
+                                cartProduct.size = sizeSelected;
+                                cartProduct.quantity = 1;
+                                cartProduct.pId = product.id;
+                                cartProduct.category = product.category;
+
+                                CartModel.of(context).addCartItem(cartProduct);
+                              } else {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                              }
+                            }
+                          : null),
                 ),
                 const SizedBox(
                   height: 16,

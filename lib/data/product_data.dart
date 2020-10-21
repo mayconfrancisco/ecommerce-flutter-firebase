@@ -9,6 +9,8 @@ class ProductData {
   List sizes;
   List images;
 
+  ProductData();
+
   ProductData.fromDocument(DocumentSnapshot document) {
     id = document.documentID;
     title = document.data['title'];
@@ -17,4 +19,10 @@ class ProductData {
     sizes = document.data['sizes'];
     images = document.data['images'];
   }
+
+  Map<String, dynamic> toResumedMap() => {
+        'title': title,
+        'description': description,
+        'price': price,
+      };
 }
