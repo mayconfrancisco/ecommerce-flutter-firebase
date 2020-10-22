@@ -17,7 +17,7 @@ class DiscountCard extends StatelessWidget {
         trailing: Icon(Icons.add),
         children: [
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: TextFormField(
               decoration: InputDecoration(
                   border: OutlineInputBorder(), hintText: 'Digite seu cupom'),
