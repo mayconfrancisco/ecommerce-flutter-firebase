@@ -8,6 +8,9 @@ class CartModel extends Model {
   UserModel userModel;
   bool isLoading = false;
 
+  String couponCode;
+  int discountPercentage = 0;
+
   List<CartProduct> products = [];
 
   CartModel(this.userModel) {
@@ -71,6 +74,11 @@ class CartModel extends Model {
         .updateData(cartProduct.toMap());
 
     notifyListeners();
+  }
+
+  void setCoupon(String code, int percentage) {
+    this.couponCode = code;
+    this.discountPercentage = percentage;
   }
 
   _loadCartItems() async {
