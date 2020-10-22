@@ -81,6 +81,29 @@ class CartModel extends Model {
     this.discountPercentage = percentage;
   }
 
+  void updatePrices() {
+    notifyListeners();
+  }
+
+  double getProductsPrice() {
+    double price = 0.0;
+    for (CartProduct c in products) {
+      price += c.quantity * c.productData.price;
+    }
+    return price;
+  }
+
+  double getDiscount() {
+    if (discountPercentage > 0) {
+      return (getProductsPrice() * discountPercentage) / 100;
+    }
+    return 0;
+  }
+
+  double getShipPrice() {
+    return 9.99;
+  }
+
   _loadCartItems() async {
     QuerySnapshot query = await Firestore.instance
         .collection('users')
@@ -92,5 +115,53 @@ class CartModel extends Model {
         query.documents.map((doc) => CartProduct.fromDocument(doc)).toList();
 
     notifyListeners();
+  }
+
+  Future<String> finishOrder() async {
+    if (products.length == 0) return null;
+
+    isLoading = true;
+
+    double productsPrice = getProductsPrice();
+    double shipPrice = getShipPrice();
+    double discount = getDiscount();
+
+    DocumentReference docRef =
+        await Firestore.instance.collection('orders').add({
+      'clientId': userModel.firebaseUser.uid,
+      'products': products.map((cartProduct) => cartProduct.toMap()).toList(),
+      'shipPrice': shipPrice,
+      'productsPrice': productsPrice,
+      'discount': discount,
+      'totalPrice': productsPrice + shipPrice - discount,
+      'status': 1,
+    });
+
+    await Firestore.instance
+        .collection('users')
+        .document(userModel.firebaseUser.uid)
+        .collection('orders')
+        .document(docRef.documentID)
+        .setData({'orderId': docRef.documentID});
+
+    QuerySnapshot query = await Firestore.instance
+        .collection('users')
+        .document(userModel.firebaseUser.uid)
+        .collection('cart')
+        .getDocuments();
+
+    for (DocumentSnapshot doc in query.documents) {
+      doc.reference.delete();
+    }
+
+    products.clear();
+
+    couponCode = null;
+    discountPercentage = 0;
+
+    isLoading = false;
+    notifyListeners();
+
+    return docRef.documentID;
   }
 }
