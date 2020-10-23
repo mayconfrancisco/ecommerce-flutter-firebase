@@ -115,7 +115,11 @@ class OrderTile extends StatelessWidget {
           radius: 20,
           backgroundColor: backColor,
           child: child,
-        )
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+        Text(subtitle)
       ],
     );
   }
