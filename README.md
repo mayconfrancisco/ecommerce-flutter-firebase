@@ -1,6 +1,7 @@
 # Flutter Ecommerce
 
 Projeto de estudos de um APP de **ecommerce** implementado em **Flutter** para Android e iOS utilizando as APIs do **Firebase**.
+Você pode se interessar pelo projeto de gerenciamento da loja virtual que se econtra [nesse link - Ecommerce Manager Flutter](https://github.com/mayconfrancisco/flutter-ecommerce-manager-firebase)
 
 ## Serviços utilizados
 **Firebase Firestore** </br>
